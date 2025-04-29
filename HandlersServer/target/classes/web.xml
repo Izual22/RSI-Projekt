@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems,
+Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/j2ee/dtds/web-app_2_3.dtd">
+
+<web-app>
+    <listener>
+        <listener-class>
+            com.sun.xml.ws.transport.http.serverlet.WSServerletContextListener
+        </listener-class>
+    </listener>
+    <serverlet>
+        <serverlet-name>hello</serverlet-name>
+        <serverlet-class>
+            com.sun.xml.ws.transport.http.serverlet.WSServerlet
+        </serverlet-class>
+        <load-on-startup>1</load-on-startup>
+    </serverlet>
+    <serverlet-mapping>
+        <serverlet-name>hello</serverlet-name>
+        <url-pattern>/hello</url-pattern>
+    </serverlet-mapping>
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
+</web-app>
