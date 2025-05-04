@@ -3,14 +3,17 @@ package org.example;
 import javax.imageio.ImageIO;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.soap.MTOM;
 import javax.xml.ws.soap.SOAPBinding;
 import java.awt.*;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.temporal.WeekFields;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -21,13 +24,13 @@ import java.util.Locale;
 public class Impl {
     int id;
     List<Event> oddaj = new ArrayList<Event>();
-    protected Impl(){
+    protected Impl() throws DatatypeConfigurationException {
         super();
         id=5;
-        oddaj.add(new Event(1,"Event 1","Typ 1",LocalDate.now(),"Informacja przykładowa"));
-        oddaj.add(new Event(2,"Event 2","Typ 2",LocalDate.of(2025,1,10),"Informacja przykładowa"));
-        oddaj.add(new Event(3,"Event 3","Typ 3",LocalDate.of(2025,2,10),"Informacja przykładowa"));
-        oddaj.add(new Event(4,"Event 4","Typ 4",LocalDate.of(2025,3,10),"Informacja przykładowa"));
+        oddaj.add(new Event(1, "Event 1", "Typ 1", DatatypeFactory.newInstance().newXMLGregorianCalendar("2025-04-10"), "Informacja przykładowa"));
+        oddaj.add(new Event(2,"Event 2","Typ 2",DatatypeFactory.newInstance().newXMLGregorianCalendar("2025-03-10"),"Informacja przykładowa"));
+        oddaj.add(new Event(3,"Event 3","Typ 3",DatatypeFactory.newInstance().newXMLGregorianCalendar("2025-02-10"),"Informacja przykładowa"));
+        oddaj.add(new Event(4,"Event 4","Typ 4",DatatypeFactory.newInstance().newXMLGregorianCalendar("2025-01-10"),"Informacja przykładowa"));
     }
 
     @WebMethod
@@ -37,7 +40,7 @@ public class Impl {
     public int getId(){
         return id;
     }
-    public List getEventsByDate(LocalDate date){
+    public List getEventsByDate(XMLGregorianCalendar date){
         List<String> ret=new ArrayList<String>();
         for(Event check:oddaj){
             if(check.getDate().equals(date)){
@@ -46,10 +49,14 @@ public class Impl {
         }
         return ret;
     }
-    public List getByWeek(LocalDate date){
+    public List getByWeek(XMLGregorianCalendar date){
         List<String> ret=new ArrayList<String>();
         for(Event check:oddaj){
-            if(check.getWeek()==date.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear()) && check.getYear()==date.getYear()){
+            LocalDate localDate = LocalDate.of(
+                    date.getYear(),
+                    date.getMonth(),
+                    date.getDay());
+            if(check.getWeek()==localDate.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear()) && check.getYear()==date.getYear()){
                 ret.add(check.toString());
             }
         }

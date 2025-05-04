@@ -1,7 +1,7 @@
 package org.example;
 
 import javax.jws.WebMethod;
-import javax.xml.ws.soap.SOAPBinding;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
@@ -11,21 +11,25 @@ public class Event implements Serializable{
     String name;
     int id;
     String type;
-    LocalDate date;
+    XMLGregorianCalendar date;
     int week;
     int month;
     int year;
     String info;
     String image;
-    Event(int id,String name, String type, LocalDate date, String Info){
+    Event(int id,String name, String type, XMLGregorianCalendar date, String Info){
         this.id=id;
         this.name=name;
         this.type=type;
         this.date=date;
         this.info=Info;
         this.year=date.getYear();
-        this.month=date.getMonthValue();
-        this.week=date.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+        this.month=date.getMonth();
+        LocalDate localDate = LocalDate.of(
+                date.getYear(),
+                date.getMonth(),
+                date.getDay());
+        this.week=localDate.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
     }
     @WebMethod
     public int getId(){
@@ -37,7 +41,7 @@ public class Event implements Serializable{
     public void setType(String type) {
         this.type = type;
     }
-    public LocalDate getDate() {
+    public XMLGregorianCalendar getDate() {
         return date;
     }
 
@@ -49,7 +53,7 @@ public class Event implements Serializable{
         this.name = name;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(XMLGregorianCalendar date) {
         this.date = date;
     }
 
