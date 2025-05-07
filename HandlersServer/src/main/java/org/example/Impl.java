@@ -19,6 +19,11 @@ import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 
 @MTOM
@@ -123,7 +128,7 @@ public class Impl {
     public String getInfo(int id) {
         for (Event ret : oddaj) {
             if (ret.getId() == id) {
-                return ret.getInfo();
+                return ret.toString();
             }
         }
         return null;
@@ -137,6 +142,37 @@ public class Impl {
             }
         }
         return null;
+    }
+    @WebMethod
+    public PDDocument getPDF(List<String> input){
+        try(PDDocument doc=new PDDocument()){
+            PDFont font= PDType1Font.HELVETICA;
+            PDPage page=new PDPage();
+            doc.addPage(page);
+            PDPageContentStream content=new PDPageContentStream(doc,page);
+            content.setFont(font,12);
+            int lines=1;
+            float pageHeight=page.getMediaBox().getHeight();
+            for(String row: input){
+                content.beginText();
+                content.newLineAtOffset(0,pageHeight-50*lines);
+                content.showText(row);
+                content.endText();
+                ++lines;
+                if(lines>10){
+                    page=new PDPage();
+                    doc.addPage(page);
+                    content.close();
+                    content=new PDPageContentStream(doc,page);
+                    content.setFont(font,12);
+                    lines=1;
+                }
+            }
+            content.close();
+            return doc;
+        }catch (IOException e){
+            return null;
+        }
     }
 
     @WebMethod
