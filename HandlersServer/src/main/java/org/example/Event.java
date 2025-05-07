@@ -1,109 +1,80 @@
 package org.example;
 
-import javax.jws.WebMethod;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
-public class Event implements Serializable{
-    String name;
-    int id;
-    String type;
-    XMLGregorianCalendar date;
-    int week;
-    int month;
-    int year;
-    String info;
-    String image;
-    Event(int id,String name, String type, XMLGregorianCalendar date, String Info){
-        this.id=id;
-        this.name=name;
-        this.type=type;
-        this.date=date;
-        this.info=Info;
-        this.year=date.getYear();
-        this.month=date.getMonth();
-        LocalDate localDate = LocalDate.of(
-                date.getYear(),
-                date.getMonth(),
-                date.getDay());
-        this.week=localDate.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
-    }
-    @WebMethod
-    public int getId(){
-        return id;
-    }
-    public String getType() {
-        return type;
-    }
-    public void setType(String type) {
-        this.type = type;
-    }
-    public XMLGregorianCalendar getDate() {
-        return date;
-    }
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Event")
+public class Event implements Serializable {
 
-    public String getName() {
-        return name;
-    }
+    private int id;
+    private String name;
+    private String type;
 
-    public void setName(String name) {
+    @XmlSchemaType(name = "dateTime")
+    private XMLGregorianCalendar date;
+
+    private int week;
+    private int month;
+    private int year;
+    private String info;
+    private String image;
+
+    public Event() {}
+
+    public Event(int id, String name, String type, XMLGregorianCalendar date, String info) {
+        this.id = id;
         this.name = name;
-    }
-
-    public void setDate(XMLGregorianCalendar date) {
+        this.type = type;
         this.date = date;
+        this.info = info;
+        this.year = date.getYear();
+        this.month = date.getMonth();
+        LocalDate localDate = LocalDate.of(date.getYear(), date.getMonth(), date.getDay());
+        this.week = localDate.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
     }
 
-    public void setWeek(int week) {
-        this.week = week;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public int getMonth() {
-        return month;
-    }
-    public void setImage(String s){
-        this.image=s;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
+    public XMLGregorianCalendar getDate() { return date; }
+    public void setDate(XMLGregorianCalendar date) { this.date = date; }
+
+    public int getWeek() { return week; }
+    public void setWeek(int week) { this.week = week; }
+
+    public int getMonth() { return month; }
+    public void setMonth(int month) { this.month = month; }
+
+    public int getYear() { return year; }
+    public void setYear(int year) { this.year = year; }
+
+    public String getInfo() { return info; }
+    public void setInfo(String info) { this.info = info; }
 
     public String getImage() {
-        if(image==null){
-            return "This event lacks an image";
-        }
-        return image;
+        return image != null ? image : "This event lacks an image";
     }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public int getWeek() {
-        return week;
-    }
-
-    public String getInfo() {
-        return info;
-    }
+    public void setImage(String image) { this.image = image; }
 
     @Override
-    @WebMethod
     public String toString() {
         return "Event{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", date=" + date +
                 ", week=" + week +
